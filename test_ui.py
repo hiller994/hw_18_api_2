@@ -1,6 +1,7 @@
 import time
 
 import allure
+from allure_commons.types import AttachmentType
 from selene import browser, have
 import requests
 
@@ -40,11 +41,19 @@ def test_login_though_api():
         resoult = requests.post(url=API_URL + '/login',
                                 data= {"Email": LOGIN, "Password": PASSWORD, "RememberMe": False},
                                 allow_redirects=False) #ВЫРУБАЕИ РЕДИРЕКТ, ЧТОБЫ ЗАПРОС АВТОРИЗАЦИИ НЕ СРЕДИРЕКТИЛ, А ОСТАЛСЯ С КОДОМ 302
+        '''
         print(resoult.status_code)
         print(resoult.text)
         print(resoult.cookies)
-        #ПОСЛЕ ТОГО, КАК СОВЕРШИЛИ АВТОРИЗАЦИЮ И ПОЛУЧИЛИ 302, ИЗ КУКОВ НУЖНО ДОСТАТЬ ТОКЕН
+        '''
 
+        allure.attach(body=str(resoult.text), name="Response", attachment_type=AttachmentType.TEXT, extension="txt")
+        #body = тексту результата
+        #attachment_type= TEXT, HTML и т.п.
+        allure.attach(body=str(resoult.cookies), name="Cookies", attachment_type=AttachmentType.TEXT, extension="txt") # Передаем в Аллюр куки
+        #Делаем str, т.к. куки приходят в формате jar, но аллюр не переваривает, переводим в строку
+
+        #ПОСЛЕ ТОГО, КАК СОВЕРШИЛИ АВТОРИЗАЦИЮ И ПОЛУЧИЛИ 302, ИЗ КУКОВ НУЖНО ДОСТАТЬ ТОКЕН
     with allure.step("Get cookie from API"):
         cookie = resoult.cookies.get("NOPCOMMERCE.AUTH") # в куках NOPCOMMERCE.AUTH=7AFEBDE9DB1F20...
 
