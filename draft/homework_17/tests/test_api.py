@@ -7,7 +7,7 @@ import requests
 from allure_commons.types import AttachmentType
 from jsonschema import validate
 
-from homework_17.data.file_path import path
+from draft.homework_17.data.file_path import path
 
 def reqres_api_get(url, **kwargs): #**kwargs для того, чтобы в данной фукции не писать params
     with allure.step("API Request"):

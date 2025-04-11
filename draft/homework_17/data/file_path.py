@@ -1,5 +1,6 @@
 import os
-import homework_17.tests
+from draft import homework_17
+
 
 def path(file_name):
     return os.path.abspath(
