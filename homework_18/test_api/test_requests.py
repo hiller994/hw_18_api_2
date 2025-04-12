@@ -7,7 +7,8 @@ from allure_commons.types import AttachmentType
 from selene import browser, have
 import requests
 
-from homework_18.Data import API_URL, MODEL_NOTEBOOK, MODEL_PC, WEB_URL
+from homework_18.Data import API_URL, MODEL_NOTEBOOK, MODEL_PC, WEB_URL, LOGIN, PASSWORD
+
 
 def add_product_to_cart(session, url, **kwargs):
     with allure.step("API Request"):
@@ -18,18 +19,29 @@ def add_product_to_cart(session, url, **kwargs):
             attachment_type=AttachmentType.TEXT,
         )
 
-        if result.request.body:  # логирование тела запроса если оно есть
+        if result.request.body:
             allure.attach(
                 body=json.dumps(result.request.body, indent=4, ensure_ascii=False),
                 name="Request body",
                 attachment_type=AttachmentType.JSON,
                 extension="json",
             )
+
+        #обработка ответа - не пытаемся парсить JSON если это не JSON
+        try:
+            response_data = result.json()
             allure.attach(
-                body=json.dumps(result.json(), indent=4, ensure_ascii=False),
+                body=json.dumps(response_data, indent=4, ensure_ascii=False),
                 name="Response",
                 attachment_type=AttachmentType.JSON,
                 extension="json",
+            )
+        except ValueError:
+            allure.attach(
+                body=result.text,
+                name="Response",
+                attachment_type=AttachmentType.TEXT,
+                extension="txt",
             )
 
         logging.info(result.request.url)
@@ -58,8 +70,37 @@ def test_add_pc(session):
         assert response.status_code == 200
         return response
 
+def test_login(session):
+    with allure.step("test login"):
+        response = add_product_to_cart(session, "/login", data= {
+            "Email": LOGIN,
+            "Password": PASSWORD,
+            "RememberMe": False},
+                                allow_redirects=False)
+    assert response.status_code == 302
+    return response
+'''
+def test_update_quantity(session):
+    with allure.step("update quantity products in cart"):
+        item =
+        response = add_product_to_cart(session, f'/cart', data={
+            "itemquantity5268138": 2,
+            "updatecart": "Update shopping cart",
+            "CountryId": 0,
+            "StateProvinceId": 0
+        })
+        assert response.status_code == 200
+        return response
+'''
+
 def test_add_multiple_products():
     session = requests.Session()  # Создаем сессию для сохранения кук
     test_add_pc(session)         # Добавляем ПК (куки сохраняются в сессии)
     test_add_notebook(session)   # Добавляем ноутбук (в той же сессии)
+    #test_update_quantity(session)
     return session.cookies.get("Nop.customer")  # Возвращаем актуальные куки
+
+def test_authorization():
+    session = requests.Session()
+    test_login(session)
+    return session.cookies.get("NOPCOMMERCE.AUTH")
