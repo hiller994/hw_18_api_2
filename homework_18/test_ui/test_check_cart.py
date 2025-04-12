@@ -4,7 +4,7 @@ import allure
 from selene import browser, have
 
 from homework_18.Data import WEB_URL, LOGIN
-from homework_18.test_api.test_requests import test_add_pc, test_add_notebook, test_add_multiple_products, \
+from homework_18.api.test_requests import test_add_pc, test_add_notebook, test_add_multiple_products, \
     test_authorization
 
 

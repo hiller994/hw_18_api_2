@@ -70,6 +70,7 @@ def test_add_pc(session):
         assert response.status_code == 200
         return response
 
+#test API login
 def test_login(session):
     with allure.step("test login"):
         response = add_product_to_cart(session, "/login", data= {
@@ -79,19 +80,6 @@ def test_login(session):
                                 allow_redirects=False)
     assert response.status_code == 302
     return response
-'''
-def test_update_quantity(session):
-    with allure.step("update quantity products in cart"):
-        item =
-        response = add_product_to_cart(session, f'/cart', data={
-            "itemquantity5268138": 2,
-            "updatecart": "Update shopping cart",
-            "CountryId": 0,
-            "StateProvinceId": 0
-        })
-        assert response.status_code == 200
-        return response
-'''
 
 def test_add_multiple_products():
     session = requests.Session()  # Создаем сессию для сохранения кук
