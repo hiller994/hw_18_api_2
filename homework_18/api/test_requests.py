@@ -10,7 +10,7 @@ import requests
 from homework_18.Data import API_URL, MODEL_NOTEBOOK, MODEL_PC, WEB_URL, LOGIN, PASSWORD
 
 
-def add_product_to_cart(session, url, **kwargs):
+def send_request(session, url, **kwargs):
     with allure.step("API Request"):
         result = session.post(url=API_URL + url, **kwargs)
         allure.attach(
@@ -52,7 +52,7 @@ def add_product_to_cart(session, url, **kwargs):
 #test API add_notebook
 def test_add_notebook(session):
     with allure.step("add notebook to cart"):
-        response = add_product_to_cart(session, f'/addproducttocart/details/{MODEL_NOTEBOOK}/1', data={
+        response = send_request(session, f'/addproducttocart/details/{MODEL_NOTEBOOK}/1', data={
             "addtocart_31.EnteredQuantity": 2
         })
         assert response.status_code == 200
@@ -61,7 +61,7 @@ def test_add_notebook(session):
 #test API add_pc
 def test_add_pc(session):
     with allure.step("add PC to cart"):
-        response = add_product_to_cart(session,f'/addproducttocart/details/{MODEL_PC}/1', data={
+        response = send_request(session,f'/addproducttocart/details/{MODEL_PC}/1', data={
                 "product_attribute_75_5_31": 96,
                 "product_attribute_75_6_32": 100,
                 "product_attribute_75_3_33": 102,
@@ -73,7 +73,7 @@ def test_add_pc(session):
 #test API login
 def test_login(session):
     with allure.step("test login"):
-        response = add_product_to_cart(session, "/login", data= {
+        response = send_request(session, "/login", data= {
             "Email": LOGIN,
             "Password": PASSWORD,
             "RememberMe": False},
