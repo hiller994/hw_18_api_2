@@ -31,18 +31,6 @@ def test_summ_in_cart():
         browser.open(WEB_URL + "cart")
         browser.element(".product-price").should(have.text("3980.00"))
 
-'''
-def test_update_quantity_products_in_cart():
-    with allure.step("Add multiple products via API and get shared cookies"):
-        cart_cookie = test_add_multiple_products()
-
-    with allure.step("check total summ in cart"):
-        browser.open(WEB_URL)
-        browser.driver.add_cookie({"name": "Nop.customer", "value": cart_cookie})
-        browser.open(WEB_URL + "cart")
-        #browser.element(".product-price").should(have.text("3980.00"))
-'''
-
 def test_auth():
     with allure.step("Add multiple products via API and get shared cookies"):
         auth_cookie = test_authorization()
